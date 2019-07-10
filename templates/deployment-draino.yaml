@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.nodedrainer.name | quote }}
+  chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  release: {{ .Release.Name }}
+  heritage: {{ .Release.Service }}
+  labels: 
+    component: {{ .Values.nodedrainer.name | quote }}
+  namespace: {{ .Values.nodedrainer.namespace | quote }}
+spec:
+  # Draino does not currently support locking/master election, so you should
+  # only run one draino at a time. Draino won't start draining nodes immediately
+  # so it's usually safe for multiple drainos to exist for a brief period of
+  # time.
+  replicas: 1
+  selector:
+    matchLabels:
+      component: {{ .Values.nodedrainer.name | quote }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.nodedrainer.name | quote }}
+      name: {{ .Values.nodedrainer.name | quote }}
+      namespace: {{ .Values.nodedrainer.namespace | quote }}
+    spec:
+      containers:
+      # You'll want to change these labels and conditions to suit your deployment.
+      - command: [/draino, --dry-run, --node-label=draino-enabled=true, BadCondition, ReallyBadCondition]
+        image: planetlabs/draino:5e07e93
+        livenessProbe:
+          httpGet: {path: /healthz, port: 10002}
+          initialDelaySeconds: 30
+        name: {{ .Values.nodedrainer.name | quote }}
+      serviceAccountName: {{ .Values.nodedrainer.name | quote }}

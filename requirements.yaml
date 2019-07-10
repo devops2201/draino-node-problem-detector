@@ -1,0 +1,4 @@
+dependencies:
+- name: node-problem-detector
+  version: v1.4.3
+  repository: "https://kubernetes-charts.storage.googleapis.com"

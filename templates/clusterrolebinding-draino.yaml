@@ -1,0 +1,15 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    component: {{ .Values.nodedrainer.name | quote }}
+  name: {{ .Values.nodedrainer.name | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Values.nodedrainer.name | quote }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.nodedrainer.name | quote }}
+  namespace: {{ .Values.nodedrainer.namespace | quote }}

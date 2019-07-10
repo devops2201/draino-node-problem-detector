@@ -1,0 +1,26 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    component: {{ .Values.nodedrainer.name | quote }}
+  name: {{ .Values.nodedrainer.name | quote }}
+rules:
+- apiGroups: ['']
+  resources: [events]
+  verbs: [create, patch, update]
+- apiGroups: ['']
+  resources: [nodes]
+  verbs: [get, watch, list, update]
+- apiGroups: ['']
+  resources: [nodes/status]
+  verbs: [patch]
+- apiGroups: ['']
+  resources: [pods]
+  verbs: [get, watch, list]
+- apiGroups: ['']
+  resources: [pods/eviction]
+  verbs: [create]
+- apiGroups: [extensions]
+  resources: [daemonsets]
+  verbs: [get, watch, list]
